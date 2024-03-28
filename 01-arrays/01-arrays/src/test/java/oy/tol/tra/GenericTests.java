@@ -102,6 +102,8 @@ public class GenericTests {
         return array;
     }
 
+
+
     private String [] getArrayWithStrings() {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
