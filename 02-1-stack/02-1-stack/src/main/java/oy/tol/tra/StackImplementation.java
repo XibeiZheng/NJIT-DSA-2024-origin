@@ -1,40 +1,74 @@
 package oy.tol.tra;
 
+/**
+ * An implementation of the StackInterface.
+ * <p>
+ * TODO: Students, implement this so that the tests pass.
+ *
+ * Note that you need to implement construtor(s) for your concrete StackImplementation, which
+ * allocates the internal Object array for the Stack:
+ * - a default constructor, calling the StackImplementation(int size) with value of 10.
+ * - StackImplementation(int size), which allocates an array of Object's with size.
+ *  -- remember to maintain the capacity and/or currentIndex when the stack is manipulated.
+ */
 public class StackImplementation<E> implements StackInterface<E> {
 
-   private final Object [] itemArray;
-   private final int capacity;
-   private int currentIndex = -1;
-   private static final int DEFAULT_STACK_SIZE = 10;
+   private Object[] itemArray;
+   private int capacity;
 
+   private static final int DEFAULT_STACK_SIZE = 10;
+   private int currentIndex=-1;
+
+   /**
+    * Allocates a stack with a default capacity.
+    */
    public StackImplementation() throws StackAllocationException {
       this(DEFAULT_STACK_SIZE);
    }
 
+   /**
+    * Allocates a stack with the specified capacity.
+    *
+    * @param capacity The capacity of the stack.
+    * @throws StackAllocationException If cannot allocate room for the internal array.
+    */
    public StackImplementation(int capacity) throws StackAllocationException {
       if (capacity < 2) {
-         throw new StackAllocationException("Stack size must be at least 2");
+         throw new StackAllocationException("Capacity should be at least 2");
       }
       try {
-         this.itemArray = new Object[capacity];
-         this.capacity = capacity;
-      } catch (OutOfMemoryError e) {
+         itemArray = new Object[capacity];
+      } catch (Exception e) {
          throw new StackAllocationException("Cannot allocate room for the internal array");
       }
+      this.capacity = capacity;
    }
 
    @Override
    public int capacity() {
-      return this.capacity;
+      return capacity;
    }
 
    @Override
    public void push(E element) throws StackAllocationException, NullPointerException {
-      if (currentIndex == capacity - 1) {
-         throw new StackAllocationException("Stack is full");
+
+      if(element==null){
+         throw new NullPointerException("can not be push");
       }
-      if (element == null) {
-         throw new NullPointerException("Element cannot be null");
+      if (currentIndex+1>=capacity){
+         int newCapacity = capacity*2;
+         Object[] newArray;
+         try{
+            newArray = new  Object[newCapacity];
+            for (int i = 0; i < itemArray.length; i++){
+               newArray[i] = itemArray[i];
+            }
+            itemArray = newArray;
+            capacity = newCapacity;
+
+         }catch (Exception e){
+            throw new StackAllocationException("cannot ");
+         }
       }
       itemArray[++currentIndex] = element;
    }
@@ -45,7 +79,10 @@ public class StackImplementation<E> implements StackInterface<E> {
       if (isEmpty()) {
          throw new StackIsEmptyException("Stack is empty");
       }
-      return (E) itemArray[currentIndex--];
+      E poppedElement = (E) itemArray[currentIndex]; // Decrement size before retrieving element
+      itemArray[currentIndex] = null; // Prevent memory leak
+      currentIndex--;
+      return poppedElement;
    }
 
    @SuppressWarnings("unchecked")
@@ -54,30 +91,39 @@ public class StackImplementation<E> implements StackInterface<E> {
       if (isEmpty()) {
          throw new StackIsEmptyException("Stack is empty");
       }
-      return (E) itemArray[currentIndex];
+      return (E) itemArray[currentIndex]; // Peek the top element without removing it
    }
 
    @Override
    public int size() {
-      return currentIndex + 1;
+      return currentIndex+1;
    }
 
    @Override
    public void clear() {
-      currentIndex = -1;
+      for (int i = 0; i < currentIndex; i++) {
+         itemArray[i] = null; // Clear references to elements
+      }
+      currentIndex = -1; // Reset size
    }
 
    @Override
    public boolean isEmpty() {
-      return currentIndex == -1;
+      return currentIndex==-1;
    }
+
+   /**
+    * Ensures that the stack has enough capacity to accommodate new elements.
+    * If the current capacity is insufficient, the capacity is doubled.
+    */
+
 
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder("[");
-      for (var index = 0; index <= currentIndex; index++) {
-         builder.append(itemArray[index].toString());
-         if (index < currentIndex) {
+      for (int i = 0; i < currentIndex+1; i++) {
+         builder.append(itemArray[i]);
+         if (i < currentIndex) {
             builder.append(", ");
          }
       }
