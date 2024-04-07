@@ -4,8 +4,8 @@ package oy.tol.tra;
  * An implementation of the StackInterface.
  * <p>
  * TODO: Students, implement this so that the tests pass.
- * <p>
- * Note that you need to implement constructor(s) for your concrete StackImplementation, which
+ *
+ * Note that you need to implement construtor(s) for your concrete StackImplementation, which
  * allocates the internal Object array for the Stack:
  * - a default constructor, calling the StackImplementation(int size) with value of 10.
  * - StackImplementation(int size), which allocates an array of Object's with size.
@@ -21,6 +21,7 @@ public class StackImplementation<E> implements StackInterface<E> {
 
    /**
     * Allocates a stack with a default capacity.
+    * @throws StackAllocationException
     */
    public StackImplementation() throws StackAllocationException {
       this(DEFAULT_STACK_SIZE);
@@ -30,7 +31,7 @@ public class StackImplementation<E> implements StackInterface<E> {
     * Allocates a stack with the specified capacity.
     *
     * @param capacity The capacity of the stack.
-    * @throws StackAllocationException If you cannot allocate room for the internal array.
+    * @throws StackAllocationException If cannot allocate room for the internal array.
     */
    public StackImplementation(int capacity) throws StackAllocationException {
       if (capacity < 2) {
@@ -60,7 +61,9 @@ public class StackImplementation<E> implements StackInterface<E> {
          Object[] newArray;
          try{
             newArray = new  Object[newCapacity];
-             System.arraycopy(itemArray, 0, newArray, 0, itemArray.length);
+            for (int i = 0; i < itemArray.length; i++){
+               newArray[i] = itemArray[i];
+            }
             itemArray = newArray;
             capacity = newCapacity;
 
