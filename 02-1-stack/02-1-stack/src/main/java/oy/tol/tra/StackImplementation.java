@@ -21,6 +21,7 @@ public class StackImplementation<E> implements StackInterface<E> {
 
    /**
     * Allocates a stack with a default capacity.
+    * @throws StackAllocationException
     */
    public StackImplementation() throws StackAllocationException {
       this(DEFAULT_STACK_SIZE);
